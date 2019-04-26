@@ -2,7 +2,7 @@
 class Entity {
   constructor() {
     this.sprite = "images/";
-    this.x = 2;
+    this.x = 0;
     this.y = 5;
   }
   render() {
@@ -47,11 +47,15 @@ class Player extends Entity {
     this.moving = false;
   }
 
+  //check win
   update(dt) {
     super.update();
     if (this.isOutOfBoundY && !this.win && !this.moving) {
       this.win = true;
-      alert("You win!");
+      // alert("You win!");
+      setTimeout(openModal, 800);
+
+      //create modal "yeah you win" with X and fire init
     }
   }
 }
@@ -63,6 +67,7 @@ class Enemy extends Entity {
     this.x = x;
     this.y = y;
   }
+  //random movement
   update(dt) {
     super.update();
     this.randomSpeed = Math.floor(Math.random() * 5) * dt;
@@ -71,7 +76,7 @@ class Enemy extends Entity {
 
   checkCollisions(player) {
     if (this.y === player.y) {
-      if (this.x >= player.x - 0.7 && this.x <= player.x + 0.7) {
+      if (this.x >= player.x - 0.5 && this.x <= player.x + 0.5) {
         return true;
       }
     } else {
@@ -79,3 +84,36 @@ class Enemy extends Entity {
     }
   }
 }
+
+class Treasure extends Entity {
+  constructor(x, y) {
+    super();
+    this.sprite += "boo.png";
+    this.x = x;
+    this.y = y;
+  }
+
+  update(dt) {}
+}
+
+class Modal {
+  constructor(overlay) {
+    this.overlay = overlay;
+    const closeButton = overlay.querySelector(".button-close");
+    closeButton.addEventListener("click", this.close.bind(this));
+    overlay.addEventListener("click", e => {
+      if (e.srcElement.id === this.overlay.id) {
+        this.close();
+      }
+    });
+  }
+  open() {
+    this.overlay.classList.remove("is-hidden");
+  }
+
+  close() {
+    this.overlay.classList.add("is-hidden");
+  }
+}
+const modal = new Modal(document.querySelector(".modal-overlay"));
+window.openModal = modal.open.bind(modal);

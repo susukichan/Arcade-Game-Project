@@ -86,7 +86,7 @@ var Engine = (function(global) {
     allEnemies.forEach(enemy => {
       if (enemy.checkCollisions(player)) {
         player.y = 5;
-        player.x = 2;
+        player.x = 0;
       }
     });
   }
@@ -102,6 +102,9 @@ var Engine = (function(global) {
     allEnemies.forEach(function(enemy) {
       enemy.update(dt);
     });
+    allTreasure.forEach(function(treasure) {
+      treasure.update(dt);
+    });
     player.update();
   }
 
@@ -116,10 +119,10 @@ var Engine = (function(global) {
      * for that particular row of the game level.
      */
     var rowImages = [
-        "images/water-block.png", // Top row is water
+        "images/monsterinc.png", // Top row is water
         "images/grass-block.png", // Row 1 of 3 of stone
         "images/stone-block.png", // Row 2 of 3 of stone
-        "images/grass-block.png", // Row 3 of 3 of stone
+        "images/water-block.png", // Row 3 of 3 of stone
         "images/stone-block.png", // Row 1 of 2 of grass
         "images/grass-block.png" // Row 2 of 2 of grass
       ],
@@ -163,6 +166,9 @@ var Engine = (function(global) {
       enemy.render();
     });
     player.render();
+    allTreasure.forEach(function(treasure) {
+      treasure.render();
+    });
   }
 
   /* This function does nothing but it could have been a good place to
@@ -170,6 +176,9 @@ var Engine = (function(global) {
    * those sorts of things. It's only called once by the init() method.
    */
   function reset() {
+    player.win = false;
+    player.x = 0;
+    player.y = 5;
     // noop
   }
 

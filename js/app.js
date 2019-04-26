@@ -34,10 +34,17 @@
 
 const player = new Player();
 const allEnemies = [
-  new Enemy(0, 1),
-  new Enemy(0, 2),
+  new Enemy(2, 1),
+  new Enemy(4, 2),
+  new Enemy(1, 2),
   new Enemy(0, 3),
-  new Enemy(0, 4)
+  new Enemy(3, 4)
+];
+
+const allTreasure = [
+  new Treasure(4, 2),
+  new Treasure(1, 4),
+  new Treasure(2, 1)
 ];
 
 document.addEventListener("keyup", function(e) {
