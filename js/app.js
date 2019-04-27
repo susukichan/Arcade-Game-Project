@@ -1,46 +1,74 @@
-// Enemies our player must avoid
-var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+const $deathCount = document.querySelector("#js-death-counter");
+const $modal = document.querySelector(".modal-overlay");
+const $modalCloseBtn = $modal.querySelector(".button-close");
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+const closeModal = () => {
+  $modal.classList.add("is-hidden");
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
-Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+const openModal = ({ deathCount }) => {
+  $deathCount.textContent = deathCount;
+
+  $modal.classList.remove("is-hidden");
 };
 
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+//-- State ------------------------------------------------------------
+let allEnemies = [];
+let allTreasure = [];
+let player = null;
+//-- State End ---------------------------------------------------------
+
+const mkRandomInt = limit => Math.floor(Math.random() * limit);
+const mkRandomTreasure = () => new Treasure(mkRandomInt(4), mkRandomInt(5));
+
+const mkGameEntities = () => {
+  allEnemies = [
+    new Enemy(2, 1),
+    new Enemy(4, 2),
+    new Enemy(1, 2),
+    new Enemy(0, 3),
+    new Enemy(3, 4)
+  ];
+
+  allTreasure = Array.from(
+    { length: Math.max(2, mkRandomInt(5)) },
+    mkRandomTreasure
+  );
+
+  player = new Player({
+    totalTreasure: allTreasure.length,
+    openModal
+  });
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+//-- Event Handlers ---------------------------------------------------
 
+const setup = () => {
+  mkGameEntities();
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+  const restartGame = () => {
+    mkGameEntities();
+    closeModal();
+  };
 
+  $modal.addEventListener("click", e => {
+    if (e.srcElement.id === $modal.id) {
+      restartGame();
+    }
+  });
 
+  $modalCloseBtn.addEventListener("click", restartGame);
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
+  document.addEventListener("keyup", e => {
+    const allowedKeys = {
+      37: "left",
+      38: "up",
+      39: "right",
+      40: "down"
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
-});
+  });
+};
+
+setup();
